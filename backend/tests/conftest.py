@@ -6,7 +6,7 @@ from sqlalchemy.pool import StaticPool
 
 from backend.app import app
 from backend.database import get_session
-from backend.models import Base, User
+from backend.models import Base, Brand, User
 
 
 @pytest.fixture
@@ -51,3 +51,15 @@ def user(session):
     session.refresh(user)
 
     return user
+
+
+@pytest.fixture
+def brand(session):
+    brand = Brand(
+        name='Teste',
+    )
+    session.add(brand)
+    session.commit()
+    session.refresh(brand)
+
+    return brand

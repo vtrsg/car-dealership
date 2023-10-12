@@ -1,6 +1,6 @@
 from sqlalchemy import select
 
-from backend.models import User
+from backend.models import Brand, User
 
 
 def test_create_user(session):
@@ -17,3 +17,15 @@ def test_create_user(session):
     user = session.scalar(select(User).where(User.username == 'test db user'))
 
     assert user.username == 'test db user'
+
+
+def test_create_brand(session):
+    new_brand = Brand(
+        name='test db brand',
+    )
+    session.add(new_brand)
+    session.commit()
+
+    brand = session.scalar(select(Brand).where(Brand.name == 'test db brand'))
+
+    assert brand.name == 'test db brand'
