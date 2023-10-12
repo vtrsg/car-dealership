@@ -23,3 +23,12 @@ class UserList(BaseModel):
 
 class Message(BaseModel):
     detail: str
+
+
+class BrandSchema(BaseModel):
+    id: int
+    name: str
+
+
+class BrandList(BaseModel):
+    brands: list[BrandSchema]
