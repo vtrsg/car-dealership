@@ -3,11 +3,13 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from backend.database import get_session
-from backend.models import Brand, User
+from backend.models import Brand, ModelType, User
 from backend.schemas import (
     BrandList,
     BrandSchema,
     Message,
+    ModelTypeList,
+    ModelTypeSchema,
     PublicUser,
     UserList,
     UserSchema,
@@ -146,3 +148,69 @@ def delete_brand(brand_id: int, session: Session = Depends(get_session)):
     session.commit()
 
     return {'detail': 'Brand deleted'}
+
+
+"""
+    TypeModel Routes
+"""
+
+
+@app.post('/types/', response_model=ModelTypeSchema, status_code=201)
+def create_type(
+    type: ModelTypeSchema, session: Session = Depends(get_session)
+):
+    db_type = session.scalar(
+        select(ModelType).where(ModelType.name == type.name)
+    )
+
+    if db_type:
+        raise HTTPException(status_code=400, detail='Type already registered')
+
+    db_type = ModelType(
+        name=type.name,
+    )
+    session.add(db_type)
+    session.commit()
+    session.refresh(db_type)
+
+    return db_type
+
+
+@app.get('/types/', response_model=ModelTypeList)
+def read_types(
+    skip: int = 0, limit: int = 100, session: Session = Depends(get_session)
+):
+    types = session.scalars(select(ModelType).offset(skip).limit(limit)).all()
+    return {'types': types}
+
+
+@app.put('/types/{type_id}', response_model=ModelTypeSchema)
+def update_type(
+    type_id: int,
+    type: ModelTypeSchema,
+    session: Session = Depends(get_session),
+):
+
+    db_type = session.scalar(select(ModelType).where(ModelType.id == type_id))
+    if db_type is None:
+        raise HTTPException(status_code=404, detail='Type not found')
+
+    db_type.name = type.name
+
+    session.commit()
+    session.refresh(db_type)
+
+    return db_type
+
+
+@app.delete('/types/{type_id}', response_model=Message)
+def delete_type(type_id: int, session: Session = Depends(get_session)):
+    db_type = session.scalar(select(ModelType).where(ModelType.id == type_id))
+
+    if db_type is None:
+        raise HTTPException(status_code=404, detail='Type not found')
+
+    session.delete(db_type)
+    session.commit()
+
+    return {'detail': 'Type deleted'}
