@@ -23,6 +23,13 @@ class Brand(Base):
     name: Mapped[str]
 
 
+class ModelType(Base):
+    __tablename__ = 'types'
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str]
+
+
 # class Car(Base):
 #     __tablename__ = 'cars'
 

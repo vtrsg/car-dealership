@@ -32,3 +32,12 @@ class BrandSchema(BaseModel):
 
 class BrandList(BaseModel):
     brands: list[BrandSchema]
+
+
+class ModelTypeSchema(BaseModel):
+    id: int
+    name: str
+
+
+class ModelTypeList(BaseModel):
+    types: list[ModelTypeSchema]
