@@ -7,6 +7,7 @@ from sqlalchemy.pool import StaticPool
 from backend.app import app
 from backend.database import get_session
 from backend.models import Base, Brand, ModelType, User
+from backend.security import get_password_hash
 
 
 @pytest.fixture
@@ -38,17 +39,28 @@ def client(session):
 
 
 @pytest.fixture
+def token(client, user):
+    response = client.post(
+        '/auth/token/',
+        data={'username': user.email, 'password': user.clean_password},
+    )
+    return response.json()['access_token']
+
+
+@pytest.fixture
 def user(session):
     user = User(
         username='Teste',
         email='teste@test.com',
-        password='testtest',
+        password=get_password_hash('testtest'),
         phone='test',
         cpf='test',
     )
     session.add(user)
     session.commit()
     session.refresh(user)
+
+    user.clean_password = 'testtest'
 
     return user
 
