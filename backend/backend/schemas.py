@@ -50,3 +50,26 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username: str | None = None
+
+
+class CarSchema(BaseModel):
+    id: int
+    name: str
+    brand_id: int
+    type_id: int
+    location: str
+    year: int
+    transmission: str
+    price: float
+    discount_price: float
+    mileage: float
+    color: str
+    seat: int
+    fuel: str
+    created_date: str
+    image_path: str
+    user_id: int
+
+
+class CarList(BaseModel):
+    cars: list[CarSchema]
