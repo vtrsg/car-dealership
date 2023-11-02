@@ -6,7 +6,7 @@ from sqlalchemy.pool import StaticPool
 
 from backend.app import app
 from backend.database import get_session
-from backend.models import Base, Brand, ModelType, User
+from backend.models import Base, Brand, Car, Location, ModelType, User
 from backend.security import get_password_hash
 
 
@@ -87,3 +87,29 @@ def type(session):
     session.refresh(type)
 
     return type
+
+
+@pytest.fixture
+def car(session, user: user, brand: brand, type: type):
+    car = Car(
+        name='Car',
+        brand_id=brand.id,
+        type_id=type.id,
+        location=Location.RS,
+        year=2020,
+        transmission='auto',
+        price=55500,
+        discount_price=5000,
+        mileage=100000,
+        color='black',
+        seat=5,
+        fuel='gas',
+        created_date='time',
+        image_path='https://localhost.com/images/img_car.png',
+        user_id=user.id,
+    )
+    session.add(car)
+    session.commit()
+    session.refresh(car)
+
+    return car
